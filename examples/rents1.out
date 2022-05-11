@@ -1,0 +1,14 @@
+OK: Successfully created new product Product{id=1, description='Producto 1', price=10, stock=2}
+OK: Successfully created new product Product{id=2, description='Producto 2', price=30, stock=1}
+OK: Successfully created new product Product{id=3, description='Producto 3', price=100, stock=3}
+OK: Successfully created new product Product{id=4, description='Producto 4', price=50, stock=2}
+OK: Successfully created new client Client{id=1, name='Cliente 1', balance=300, productIds=[], stocks=[]}
+OK: Successfully created new client Client{id=2, name='Cliente 2', balance=50, productIds=[], stocks=[]}
+ERROR: There is no client with id 8
+ERROR: There is no product with id 20
+ERROR: Client Client{id=2, name='Cliente 2', balance=50, productIds=[], stocks=[]} has not enough funds for renting product Product{id=3, description='Producto 3', price=100, stock=3}
+OK: Client Client{id=1, name='Cliente 1', balance=200, productIds=[3], stocks=[1]} has successfully rented product Product{id=3, description='Producto 3', price=100, stock=2}
+OK: Client Client{id=1, name='Cliente 1', balance=100, productIds=[3], stocks=[2]} has successfully rented product Product{id=3, description='Producto 3', price=100, stock=1}
+OK: Client Client{id=1, name='Cliente 1', balance=70, productIds=[2, 3], stocks=[1, 2]} has successfully rented product Product{id=2, description='Producto 2', price=30, stock=0}
+OK: Client Client{id=1, name='Cliente 1', balance=20, productIds=[2, 3, 4], stocks=[1, 2, 1]} has successfully rented product Product{id=4, description='Producto 4', price=50, stock=1}
+ERROR: Client Client{id=1, name='Cliente 1', balance=20, productIds=[2, 3, 4], stocks=[1, 2, 1]} has not enough funds for renting product Product{id=3, description='Producto 3', price=100, stock=1}

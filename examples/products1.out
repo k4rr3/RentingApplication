@@ -1,0 +1,9 @@
+ERROR: Unknown operation INVALID_OP
+ERROR: Price -25 is negative or zero in new product Precio negativo
+ERROR: Stock 0 is negative or zero in new product Sin stock
+ERROR: Price -25 is negative or zero in new product Precio y stock negativos
+ERROR: Stock -4 is negative or zero in new product Precio y stock negativos
+OK: Successfully created new product Product{id=1, description='Producto 1', price=25, stock=2}
+INFO: The info of the product is Product{id=1, description='Producto 1', price=25, stock=2}
+OK: Successfully created new product Product{id=2, description='Producto 2', price=30, stock=1}
+OK: Successfully created new product Product{id=3, description='Producto 3', price=40, stock=3}

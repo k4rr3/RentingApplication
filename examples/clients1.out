@@ -1,0 +1,5 @@
+ERROR: Balance 0 is negative or zero in new client Cliente sin saldo
+OK: Successfully created new client Client{id=1, name='Cliente1', balance=500, productIds=[], stocks=[]}
+INFO: The info of the client is Client{id=1, name='Cliente1', balance=500, productIds=[], stocks=[]}
+ERROR: There is no client with id 0
+ERROR: There is no client with id 2
