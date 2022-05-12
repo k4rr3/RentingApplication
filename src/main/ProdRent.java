@@ -1,3 +1,4 @@
+
 package main;
 
 import acm.program.CommandLineProgram;
@@ -48,8 +49,10 @@ public class ProdRent extends CommandLineProgram {
     }
 
     private void askFileNames() {
-        movements = readLine("Enter movements file name: ");
-        logger = readLine("Enter your log file name: ");
+        //movements = readLine("Enter movements file name: ");
+        //logger = readLine("Enter your log file name: ");
+        movements = "in.txt";
+        logger = "out.txt";
     }
 
     private void openFiles() throws IOException {
@@ -67,7 +70,6 @@ public class ProdRent extends CommandLineProgram {
     }
 
     private void resetFiles() throws IOException {
-        movementsFile.reset();
         productsDB.reset();
         clientsDB.reset();
     }
@@ -75,30 +77,31 @@ public class ProdRent extends CommandLineProgram {
     private void processMovements() throws IOException {
         String line = movementsFile.readLine();
         while (line != null) {
-            detectMovement(line);
+            processMovement(line);
             line = movementsFile.readLine();
         }
     }
 
-    private void detectMovement(String line) throws IOException {
+    private void processMovement(String line) throws IOException {
         StringTokenizer st = new StringTokenizer(line, ",");
-        String movement = st.nextToken();
-        if (movement.equals("ALTA_PRODUCTO")) {
-            registerProduct(st);
-        } else if (movement.equals("ALTA_CLIENTE")) {
-            registerClient(st);
-        } else if (movement.equals("INFO_PRODUCT")) {
-            getProductInfo(st);
-        } else if (movement.equals("INFO_CLIENT")) {
-            getClientInfo(st);
-        } else if (movement.equals("ALQUILAR")) {
-            rentProduct(st);
-        } else if (movement.equals("DEVOLVER")) {
-            returnProduct(st);
-        } else {
-            logFile.unknownOperation(movement);
-        }
-
+        if (st.hasMoreTokens()) {
+            String movement = st.nextToken();
+            if (movement.equals("ALTA_PRODUCTO")) {
+                registerProduct(st);
+            } else if (movement.equals("ALTA_CLIENTE")) {
+                registerClient(st);
+            } else if (movement.equals("INFO_PRODUCTO")) {
+                getProductInfo(st);
+            } else if (movement.equals("INFO_CLIENTE")) {
+                getClientInfo(st);
+            } else if (movement.equals("ALQUILAR")) {
+                rentProduct(st);
+            } else if (movement.equals("DEVOLVER")) {
+                returnProduct(st);
+            } else {
+                logFile.unknownOperation(movement);
+            }
+       }
     }
 
     private void registerProduct(StringTokenizer st) throws IOException {
@@ -106,11 +109,16 @@ public class ProdRent extends CommandLineProgram {
         String description = st.nextToken();
         int price = Integer.parseInt(st.nextToken());
         int stock = Integer.parseInt(st.nextToken());
+        boolean validProduct = true;
         if (price <= 0) {
             logFile.errorPriceCannotBeNegativeOrZero(description, price);
-        } else if (stock <= 0) {
-            logFile.errorStockCannotBeNegativeOrZero(description, price);
-        } else {
+            validProduct = false;
+        }
+        if (stock <= 0) {
+            logFile.errorStockCannotBeNegativeOrZero(description, stock);
+            validProduct = false;
+        }
+        if (validProduct) {
             Product newProduct = new Product(id, description, price, stock);
             productsDB.write(newProduct);
             logFile.okNewProduct(newProduct);
@@ -171,20 +179,32 @@ public class ProdRent extends CommandLineProgram {
     private void rentProduct(StringTokenizer st) throws IOException {
         long idClient = Long.parseLong(st.nextToken());
         long idProduct = Long.parseLong(st.nextToken());
+        boolean validRent = true;
         if (invalidClientId(idClient)) {
             logFile.errorInvalidClientId(idClient);
-        } else if (invalidProductId(idProduct)) {
+            validRent = false;
+        }
+        if (invalidProductId(idProduct)) {
             logFile.errorInvalidProductId(idProduct);
-        } else {
+            validRent = false;
+        }
+
+        if (validRent) {
             Client client = clientsDB.read(idClient);
             Product product = productsDB.read(idProduct);
             if (product.getStock() <= 0) {
                 logFile.errorCannotRentProductWithNoStock(product);
-            } else if (client.getBalance() < product.getPrice()) {
+                validRent = false;
+            }
+            if (client.getBalance() < product.getPrice()) {
                 logFile.errorClientHasNotEnoughFundsToRentProduct(client, product);
-            } else if (!client.canAddProduct(idProduct)) {
+                validRent = false;
+            }
+            if (!client.canAddProduct(idProduct)) {
                 logFile.errorClientCannotAddProduct(client, product);
-            } else {
+                validRent = false;
+            }
+            if (validRent) {
                 client.addProduct(idProduct);
                 client.subBalance(product.getPrice());
                 product.decrementStock();
@@ -198,16 +218,23 @@ public class ProdRent extends CommandLineProgram {
     private void returnProduct(StringTokenizer st) throws IOException {
         long idClient = Long.parseLong(st.nextToken());
         long idProduct = Long.parseLong(st.nextToken());
+        boolean validReturn = true;
         if (invalidClientId(idClient)) {
             logFile.errorInvalidClientId(idClient);
-        } else if (invalidProductId(idProduct)) {
+            validReturn = false;
+        }
+        if (invalidProductId(idProduct)) {
             logFile.errorInvalidProductId(idProduct);
-        } else {
+            validReturn = false;
+        }
+        if (validReturn) {
             Client client = clientsDB.read(idClient);
             Product product = productsDB.read(idProduct);
-            if (!client.hasProduct(idProduct)) {
-                logFile.errorClientHasNotProduct(client, idProduct);
-            } else {
+            if (!(client.hasProduct(product.getId()))) {
+                logFile.errorClientHasNotProduct(client, product.getId());
+                validReturn = false;
+            }
+            if (validReturn) {
                 client.removeProduct(idProduct);
                 product.incrementStock();
                 clientsDB.write(client);
@@ -216,6 +243,4 @@ public class ProdRent extends CommandLineProgram {
             }
         }
     }
-
-
 }
