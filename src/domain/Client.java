@@ -26,6 +26,7 @@ public class Client {
         this.id = id;
         this.name = name;
         this.balance = balance;
+
         numProducts = 0;
         products = new long[MAX_PRODUCTS];
         stock = new int[MAX_PRODUCTS];
@@ -36,10 +37,12 @@ public class Client {
     }
 
     public String getName() {
+
         return name;
     }
 
     public int getBalance() {
+
         return balance;
     }
 
@@ -54,7 +57,6 @@ public class Client {
     }
 
     public boolean canAddProduct(long idProduct) {
-        updateNumProducts();
         return hasProduct(idProduct) || numProducts < MAX_PRODUCTS;
     }
 
@@ -68,52 +70,20 @@ public class Client {
     }
 
     public boolean addProduct(long idProduct) {
-        /*if (canAddProduct(idProduct)) {//compruebo aqui una vez el has product
-            if (!hasProduct(idProduct)) {//y aqui otra vez, hay que arreglarlo0
+        if (canAddProduct(idProduct)) {
+            if (!hasProduct(idProduct)) {
                 products[numProducts] = idProduct;
                 numProducts++;
             }
-            stock[getStockAndProductPosition(idProduct)] += 1;
+            stock[getStockPosition(idProduct)] += 1;
 
-            return true;
-    }
-        return false;*/
-        updateNumProducts();
-        if (hasProduct(idProduct)) {
-            stock[getStockAndProductPosition(idProduct)] += 1;
-            return true;
-        } else if (numProducts < MAX_PRODUCTS) {
-            products[numProducts] = idProduct;
-            stock[numProducts] += 1;
-            numProducts++;
-            return true;
-        } else {
-            return false;
-        }
-        /*boolean isAdd = false;
-        for (int i = 0; i < MAX_PRODUCTS && !isAdd; i++) {
-            if (products[i] == idProduct) {
-                stock[i] += 1;
-                isAdd = true;
-            } else if (products[i] == 0) {
-                products[i] = idProduct;
-                stock[i] += 1;
-                isAdd = true;
-            }
-        }
-        return isAdd;*/
-    }
-
-    public boolean removeProduct(long idProduct) {
-
-        if (hasProduct(idProduct)) {
-            stock[getStockAndProductPosition(idProduct)] -= 1;
             return true;
         }
         return false;
     }
 
-    private int getStockAndProductPosition(long idProduct) {
+    ///puedo fusionarlo con hasProduct o es mejor por separado????
+    private int getStockPosition(long idProduct) {
         for (int i = 0; i < products.length; i++) {
             if (idProduct == products[i]) {
                 return i;
@@ -122,9 +92,19 @@ public class Client {
         return -1;
     }
 
+    public boolean removeProduct(long idProduct) {
+
+        if (hasProduct(idProduct)) {
+            stock[getStockPosition(idProduct)] -= 1;
+            return true;
+        }
+        return false;
+    }
+
+
     public int getProductStock(long idProduct) {
         if (hasProduct(idProduct)) {
-            return stock[getStockAndProductPosition(idProduct)];
+            return stock[getStockPosition(idProduct)];
         } else return 0;
     }
 
@@ -143,10 +123,12 @@ public class Client {
     }
 
     private void updateNumProducts() {
-        this.numProducts = 0;
-        for (int i = 0; i < products.length; i++) {
-            if (products[i] != 0) {
-                numProducts++;
+        if (numProducts != products.length) {
+            this.numProducts = 0;
+            for (int i = 0; i < products.length; i++) {
+                if (products[i] != 0) {
+                    numProducts++;
+                }
             }
         }
     }

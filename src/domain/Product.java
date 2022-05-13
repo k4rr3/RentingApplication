@@ -2,6 +2,8 @@ package domain;
 
 import utils.PackUtils;
 
+import java.io.BufferedReader;
+
 public class Product {
 
     public static final int DESCRIPTION_LIMIT = 20;
