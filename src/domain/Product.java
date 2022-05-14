@@ -2,11 +2,12 @@ package domain;
 
 import utils.PackUtils;
 
-import java.io.BufferedReader;
-
 public class Product {
 
     public static final int DESCRIPTION_LIMIT = 20;
+    /***
+     * Tamaño del array de bytes en función de los parámetros que deseamos empaquetar
+     */
     public static final int SIZE = 8 + 2 * DESCRIPTION_LIMIT + 4 + 4; // TODO: Pas 1
 
     private final long id;
@@ -14,6 +15,13 @@ public class Product {
     private final int price;
     private int stock;
 
+    /***
+     * Constructor de la clase Product, donde inicializamos las variables de instancia
+     * @param id
+     * @param description
+     * @param price
+     * @param stock
+     */
     public Product(long id, String description, int price, int stock) {
         this.id = id;
         this.description = description;
@@ -21,30 +29,56 @@ public class Product {
         this.stock = stock;
     }
 
+    /***
+     * Getter del id del producto
+     * @return
+     */
     public long getId() {
         return id;
     }
 
+    /***
+     * Getter de la descripción del producto
+     * @return
+     */
     public String getDescription() {
         return description;
     }
 
+    /***
+     * Getter del precio del producto
+     * @return
+     */
     public int getPrice() {
         return price;
     }
 
+    /***
+     * Getter de las unidades que hay en stock que hay del producto
+      * @return
+     */
     public int getStock() {
         return stock;
     }
 
+    /***
+     * Incrementa las unidades en stock de un producto
+     */
     public void incrementStock() {
         stock += 1;
     }
 
+    /***
+     * Decrementa las unidades de stock que hay de un producto
+     */
     public void decrementStock() {
         stock -= 1;
     }
 
+    /***
+     * Empaqueta en un array de bytes las instancias de la clase
+     * @return
+     */
     public byte[] toBytes() {
         int offset = 0;
         byte[] record = new byte[SIZE];
@@ -58,6 +92,11 @@ public class Product {
         return record;
     }
 
+    /***
+     * Desempaqueta el array de bytes y crea un producto en función de los parámetros desempaquetados
+     * @param record
+     * @return
+     */
     public static Product fromBytes(byte[] record) {
         int offset = 0;
         long id = PackUtils.unpackLong(record, offset);
