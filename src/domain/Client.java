@@ -87,7 +87,7 @@ public class Client {
      * @return
      */
     public boolean canAddProduct(long idProduct) {
-        //updateNumProducts();
+        updateNumProducts();
         return hasProduct(idProduct) || numProducts < MAX_PRODUCTS;
     }
 
